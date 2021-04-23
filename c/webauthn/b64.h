@@ -199,8 +199,6 @@ int urlsafe_b64_decode(const char *in, size_t ilen, uint8_t *out,
     ++in_index;
   }
 
-  *in_index = '\0';
-
   ret = b64_decode(in, ilen, out, olen);
 
   if (ret != 0) {

@@ -105,8 +105,11 @@ int verify_challenge_in_client_data(const u8* digest_message,
     challenge_b64_len++;
   }
 
-  urlsafe_b64_decode((const char*)challenge_b64, 44, challenge_decode,
+  int err = urlsafe_b64_decode((const char*)challenge_b64, 44, challenge_decode,
                      &challenge_decode_len);
+  if (err != 0) {
+    return err;
+  }
 
   /* compare the challenge of client data with the tx message digest */
   if (challenge_decode_len == 32 &&
