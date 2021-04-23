@@ -31,7 +31,7 @@ const ERROR_WRONG_PUBKEY: i8 = 64;
 //   const ERROR_R1_SIGNATURE_VERFICATION: i8 = 66;
 
 const ERROR_ENCODING: i8 = -2;
-const ERROR_WITNESS_SIZE: i8 = -22;
+const ERROR_LENGTH_NOT_ENOUGH: i8 = -3;
 
 fn gen_tx(dummy: &mut DummyDataLoader, lock_args: Bytes) -> TransactionView {
     let mut rng = thread_rng();
@@ -499,7 +499,7 @@ fn test_super_long_witness() {
         TransactionScriptsVerifier::new(&resolved_tx, &data_loader).verify(MAX_CYCLES);
     assert_error_eq!(
         verify_result.unwrap_err(),
-        ScriptError::ValidationFailure(ERROR_WITNESS_SIZE),
+        ScriptError::ValidationFailure(ERROR_LENGTH_NOT_ENOUGH),
     );
 }
 

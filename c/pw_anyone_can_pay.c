@@ -43,12 +43,9 @@ int check_payment_unlock(uint64_t min_ckb_amount, uint128_t min_udt_amount) {
   InputWallet input_wallets[MAX_TYPE_HASH] = {0};
   uint64_t len = BLAKE2B_BLOCK_SIZE;
   /* load wallet lock hash */
-  int ret = ckb_load_script_hash(lock_hash, &len, 0);
+  int ret = ckb_checked_load_script_hash(lock_hash, &len, 0);
   if (ret != CKB_SUCCESS) {
     return ERROR_SYSCALL;
-  }
-  if (len > BLAKE2B_BLOCK_SIZE) {
-    return ERROR_SCRIPT_TOO_LONG;
   }
 
   /* iterate inputs and find input wallet cell */
@@ -257,7 +254,7 @@ int has_signature(int *has_sig) {
 
   /* Load witness of first input */
   uint64_t witness_len = MAX_WITNESS_SIZE;
-  ret = ckb_load_witness(temp, &witness_len, 0, 0, CKB_SOURCE_GROUP_INPUT);
+  ret = ckb_checked_load_witness(temp, &witness_len, 0, 0, CKB_SOURCE_GROUP_INPUT);
 
   if ((ret == CKB_INDEX_OUT_OF_BOUND) ||
       (ret == CKB_SUCCESS && witness_len == 0)) {
@@ -267,10 +264,6 @@ int has_signature(int *has_sig) {
 
   if (ret != CKB_SUCCESS) {
     return ERROR_SYSCALL;
-  }
-
-  if (witness_len > MAX_WITNESS_SIZE) {
-    return ERROR_WITNESS_SIZE;
   }
 
   /* load signature */

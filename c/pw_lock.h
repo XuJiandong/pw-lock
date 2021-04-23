@@ -38,13 +38,9 @@ int get_signature_from_trancation(uint64_t *chain_id, unsigned char *message,
 
   /* Load witness of first input */
   uint64_t witness_len = MAX_WITNESS_SIZE;
-  int ret = ckb_load_witness(temp, &witness_len, 0, 0, CKB_SOURCE_GROUP_INPUT);
+  int ret = ckb_checked_load_witness(temp, &witness_len, 0, 0, CKB_SOURCE_GROUP_INPUT);
   if (ret != CKB_SUCCESS) {
     return ERROR_SYSCALL;
-  }
-
-  if (witness_len > MAX_WITNESS_SIZE) {
-    return ERROR_WITNESS_SIZE;
   }
 
   /* load signature */
@@ -127,12 +123,9 @@ int read_pw_args(unsigned char *lock_args, uint64_t *lock_args_size) {
   /* Load args */
   unsigned char script[SCRIPT_SIZE];
   len = SCRIPT_SIZE;
-  ret = ckb_load_script(script, &len, 0);
+  ret = ckb_checked_load_script(script, &len, 0);
   if (ret != CKB_SUCCESS) {
     return ERROR_SYSCALL;
-  }
-  if (len > SCRIPT_SIZE) {
-    return ERROR_SCRIPT_TOO_LONG;
   }
   mol_seg_t script_seg;
   script_seg.ptr = (uint8_t *)script;
