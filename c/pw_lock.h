@@ -30,7 +30,7 @@
  * @param lock_bytes_size the size of signature
  *
  */
-int get_signature_from_trancation(uint64_t *chain_id, unsigned char *message,
+int get_signature_from_transaction(uint64_t *chain_id, unsigned char *message,
                                   unsigned char *lock_bytes,
                                   uint64_t *lock_bytes_size) {
   unsigned char temp[TEMP_SIZE];
@@ -60,6 +60,7 @@ int get_signature_from_trancation(uint64_t *chain_id, unsigned char *message,
     memcpy(lock_bytes, lock_bytes_seg.ptr, MIN_SIGNATURE_SIZE);
     *lock_bytes_size = MIN_SIGNATURE_SIZE;
   } else {
+    *chain_id = 0;
     memcpy(chain_id, lock_bytes_seg.ptr, 1);
     memcpy(lock_bytes, (lock_bytes_seg.ptr + 1), lock_bytes_seg.size - 1);
     *lock_bytes_size = lock_bytes_seg.size - 1;
@@ -174,7 +175,7 @@ int verify_pwlock_sighash_all(uint8_t *code_buf, uint64_t code_buf_size) {
     return ret;
   }
 
-  ret = get_signature_from_trancation(&chain_id, message, lock_bytes,
+  ret = get_signature_from_transaction(&chain_id, message, lock_bytes,
                                       &lock_bytes_size);
   if (ret != CKB_SUCCESS) {
     return ret;
